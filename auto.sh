@@ -1,5 +1,6 @@
 #!/bin/bash
 
+path="Resultat"
 Z="40"
 Zi=$Z
 Zf="41"
@@ -26,7 +27,7 @@ do
         sed -i "/neutron\_blocking =/ s/neutron\_blocking = [0-9]*/neutron\_blocking = 0/" hfbtho_NAMELIST.dat
     fi
     ./main
-    cp thoout.dat Z$Z-N$N.dat
+    cp thoout.dat $path/Z$Z-N$N.dat
     #sed -n 3p hfbtho_NAMELIST.dat 
     #sed -n 16p hfbtho_NAMELIST.dat
     ##echo "---------------"
@@ -39,22 +40,22 @@ done
 #comment
 while [ $Z -le $Zf ]
 do
-    Atom=$(grep "Nucleus:" Z$Z-N$N.dat | awk '{print $2}')
-    echo -e "Z:N:BindingEnergy" > $Atom-val_stock
+    Atom=$(grep "Nucleus:" $path/Z$Z-N$N.dat | awk '{print $2}')
+    echo -e "Z:N:BindingEnergy" > $path/$Atom-val_stock
     while [ $N -le $Nf ]
     do
-        tEnergy=$(grep -i "tEnergy" Z$Z-N$N.dat | awk '{print $4}')
+        tEnergy=$(grep -i "tEnergy" $path/Z$Z-N$N.dat | awk '{print $4}')
         sign=-1
         tEnergy=$(echo "$tEnergy * $sign" | bc)
-        NrmsRadius=$(grep -i "rms-radius" Z$Z-N$N.dat | awk '{print $3}')
-        PrmsRadius=$(grep -i "rms-radius" Z$Z-N$N.dat | awk '{print $4}')
-        echo "$Z:$N:$tEnergy" >> $Atom-val_stock
+        NrmsRadius=$(grep -i "rms-radius" $path/Z$Z-N$N.dat | awk '{print $3}')
+        PrmsRadius=$(grep -i "rms-radius" $path/Z$Z-N$N.dat | awk '{print $4}')
+        echo "$Z:$N:$tEnergy" >> $path/$Atom-val_stock
         ((N=N+1))
     done
-    column -t -s: $Atom-val_stock > $Atom-Energie_liaison
+    column -t -s: $path/$Atom-val_stock > $path/$Atom-Energie_liaison
     ((N=$Ni))
     ((Z=Z+1))
 done
 ((Z=$Zi))
 #cat val_stock
-cat Energie_liaison
+cat $path/*-Energie_liaison
