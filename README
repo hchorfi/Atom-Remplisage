@@ -1,0 +1,114 @@
+
+                           HFBTHO (v2.00d)
+                           ===============
+
+1. List of files
+   -------------
+
+   The following files should be part of this package:
+
+   blas.f
+   lapack.f
+   hfbtho_v200d.f90
+   main_v200d.f900
+   hfbtho_NAMELIST.dat
+   COPYING
+   Makefile
+   README
+   examples/
+   examples/test_odd/
+   examples/test_spherical/
+   examples/test_temperature/
+   examples/test_tho/
+
+   The 4 sub-directories of examples/ contain the input files and the output
+   files coresponding to the Tables 1-4 of the manuscript.
+
+
+1. Compilation Instructions
+   ------------------------
+
+   a) Adapt the Makefile to your system.
+
+      This includes:
+       - choosing the compiler (variable: COMPILER)
+       - setting the name of the compiler executable (variable: FORTRAN)
+       - choosing optimized or debug mode (variable: DEBUG, value: TRUE or
+         FALSE)
+       - choosing to link to a pre-installed BLAS and LAPACK library
+         (variable: ACML_LIBRARY, value: TRUE or FALSE). If ACML_LIBRARY=FALSE,
+         the code will be compiled using the parts of the BLAS and LAPACK
+         libraries shipped with the program.
+       - choosing static versus dynamic linking (variable: STATIC_LIB, value:
+         TRUE or FALSE)
+       - setting the pre-processor option activating multithreading with
+         OpenMP (variable: hide_openmp, value: 1 or 0)
+
+   b) Compile.
+
+      Simply type
+
+           make
+
+      in the command line of a terminal.
+
+2. Running Instructions
+   --------------------
+
+      Run the code. The following shows what to type on a typical Linux
+      terminal console (assuming bash shell):
+
+           ./main < /dev/null >& [output_file]
+
+      where [output_file] is a name of your choice that will contain the
+      redirection of the standard output and standard error.
+
+      The program will try to open the file called 'hfbtho_NAMELIST.dat',
+      where the input data is located. If this file does not exist, an error
+      message will be printed to the standard output, and the program will
+      exit.
+
+      The directory examples/ contains many examples of calculations with
+      the corresponding input data and output. Just copy or link one of
+      these files to hfbtho_NAMELIST.dat to test the code.
+
+      Multi-threading is supported with OpenMP. To use, you must set the
+      number of OpenMP threads using a command such as
+
+           export OMP_NUM_THREADS=4
+
+      (example using bash shell syntax).
+
+
+3. Bugs
+   ----
+
+   Old versions (<4.4) and/or conflicting installations of the GNU compiler
+   `gfortran' may cause erratic behavior of the code, depending on the
+   platform.
+
+   Building HFBTHO with OpenMP support and simultaneously linking to threaded
+   BLAS and LAPACK libraries has caused race conditions with the Portland PGI
+   compiler (all versions) and the Cray LibSci library. This seems to be a bug
+   of the compiler.
+
+
+4. Important remark: the SLy family of Skyrme forces
+   ----------------
+
+   Several benchmarks published in the CPC article describing HFBTHO version
+   2.00d were made with the SLy4 and SLy5 Skyrme forces. Following a common
+   practice at the time, we used the parameterizations of those forces as
+   recommended by their authors. These unofficial parametrizations differ from
+   what was published in Nucl. Phys. 635, 231 (1997). The program HFODD in its
+   version 2.49t (CPC 183, 166 (2012)), used the same unofficial
+   parametrizations for all SLy forces.
+
+   In the next release of both HFBTHO and HFODD programs, it is anticipated
+   that the implementation of the SLy family of Skyrme forces will be reverted
+   to their published values. In preparation for this, we have given in the
+   subroutine skforce of the file hfbtho_v200d.f90 (lines 1219 to 1296) the
+   official parametrizations of all SLy forces. Users willing to use them
+   should uncomment these lines and recompile the code before use.
+
+
